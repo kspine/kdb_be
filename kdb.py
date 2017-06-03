@@ -5,7 +5,8 @@ import json
 
 class BaseHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
-        self.set_header('Access-Control-Allow-Origin', 'http://kylin-ux.com:4200')
+        #self.set_header('Access-Control-Allow-Origin', 'http://kylin-ux.com:4200')
+        self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
 
