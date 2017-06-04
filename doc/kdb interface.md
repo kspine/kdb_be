@@ -1,5 +1,5 @@
 1. 单品销售情况查询
-
+   api: api/query_book_mdata
    in: ISBN 日期
    > 日期, 具体某一天, 最近一周, 最近一月等
 
@@ -33,7 +33,7 @@
    ```
 
 2. 竞品情况比较
-   
+   api: api/query_shopbook_data
    in: N*店铺_ISBN + 数据项 + 周期
 
    ```
@@ -49,23 +49,28 @@
    ```
    [
        //一个宫格
-       [
-           //一个 (x,y)
-           {
-              'date':'',
-              'val':''
-           },
-           {
+       {
+           'shop':'',
+           'data':[
+                //一个 (x,y)
+                {
+                   'date':'',
+                   'val':''
+                },
+                {
 
-           }
-       ],
-       [
+                }
+            ]
+       },
+       ,
+       {
 
-       ]
+       }
    ]
    ```
   
 3. 某类目特殊表现监
+   api: api/query_concerned_data
    in:
 
    ```
