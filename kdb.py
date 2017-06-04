@@ -43,11 +43,70 @@ class LoginHandler(BaseHandler):
                 "error" : "Need you follow uid."
             })
 
+class SingleBookHandler(BaseHandler):
+    def get(self):
+        print('hello get')
+        #self.redirect("http://localhost:4200/content")
+        self.write("Hello, world")
+    def post(self):
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        if param['username'] == 'admin' and param['password'] == '111111':
+            self.write({'...': '...'})
+        else:
+            self.write({
+                "request" : "/api/authenticate",
+                "error_code" : "20502",
+                "error" : "Need you follow uid."
+            })
+
+class MultiBookHandler(BaseHandler):
+    def get(self):
+        print('hello get')
+        #self.redirect("http://localhost:4200/content")
+        self.write("Hello, world")
+    def post(self):
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        self.write([
+            {
+                'shop':'人民邮电出版社官方旗舰店',
+                'data':[
+                    {
+                        'date':'',
+                        'val':''
+                    }
+                ]
+            }
+        ])
+
+class ConcernedDataHandler(BaseHandler):
+    def get(self):
+        print('hello get')
+        #self.redirect("http://localhost:4200/content")
+        self.write("Hello, world")
+    def post(self):
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        if param['username'] == 'admin' and param['password'] == '111111':
+            self.write({'...': '...'})
+        else:
+            self.write({
+                "request" : "/api/authenticate",
+                "error_code" : "20502",
+                "error" : "Need you follow uid."
+            })
 
 def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/api/authenticate", LoginHandler),
+        (r"/api/query_book_mdata", LoginHandler),
+        (r"/api/query_shopbook_data", LoginHandler),
+        (r"/api/query_concerned_data", LoginHandler),
     ])
 
 if __name__ == "__main__":
