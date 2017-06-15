@@ -61,26 +61,21 @@ class SingleBookHandler(BaseHandler):
                 "error" : "Need you follow uid."
             })
 
-class MultiBookHandler(BaseHandler):
+class MultiShopBookHandler(BaseHandler):
     def get(self):
         print('hello get')
         #self.redirect("http://localhost:4200/content")
         self.write("Hello, world")
     def post(self):
+        import mock
+
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
         #self.write({'token': 'kylin_token'})
-        self.write([
-            {
-                'shop':'人民邮电出版社官方旗舰店',
-                'data':[
-                    {
-                        'date':'',
-                        'val':''
-                    }
-                ]
-            }
-        ])
+        # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
+        # query by shop+book+datatype
+        print('request')
+        self.write(mock.mb)
 
 class ConcernedDataHandler(BaseHandler):
     def get(self):
@@ -104,9 +99,9 @@ def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/api/authenticate", LoginHandler),
-        (r"/api/query_book_mdata", LoginHandler),
-        (r"/api/query_shopbook_data", LoginHandler),
-        (r"/api/query_concerned_data", LoginHandler),
+        (r"/api/query_book_mdata", SingleBookHandler),
+        (r"/api/query_mshopbook_data", MultiShopBookHandler),
+        (r"/api/query_concerned_data", ConcernedDataHandler),
     ])
 
 if __name__ == "__main__":
