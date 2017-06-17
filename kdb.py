@@ -61,7 +61,48 @@ class SingleBookHandler(BaseHandler):
                 "error" : "Need you follow uid."
             })
 
+
 class MultiShopBookHandler(BaseHandler):
+    """Query last record,
+    all datatype
+    all template of current user
+    all shop list
+    all book list
+    """
+
+    def get(self):
+        print('hello get')
+        #self.redirect("http://localhost:4200/content")
+        self.write("Hello, world")
+    def post(self):
+        import mock
+
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
+        # query by shop+book+datatype
+        print('request')
+        self.write(mock.init)
+
+
+class MultiShopBookQueryHandler(BaseHandler):
+    def get(self):
+        print('hello get')
+        #self.redirect("http://localhost:4200/content")
+        self.write("Hello, world")
+    def post(self):
+        import mock
+
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
+        # query by shop+book+datatype
+        print('request')
+        self.write(mock.mb)
+
+class MultiShopBookSaveTemplateHandler(BaseHandler):
     def get(self):
         print('hello get')
         #self.redirect("http://localhost:4200/content")
