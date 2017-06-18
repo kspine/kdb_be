@@ -25,6 +25,17 @@ class MainHandler(BaseHandler):
     def post(self):
         self.write("Hello, world")
 
+
+class SaveTemplateHandler(BaseHandler):
+    def post(self):
+        import mock
+
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        print(param)
+        self.write({'res':True})
+
+
 class LoginHandler(BaseHandler):
     def get(self):
         print('hello get')
@@ -96,6 +107,7 @@ class MultiShopBookQueryHandler(BaseHandler):
 
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
+        print(param)
         #self.write({'token': 'kylin_token'})
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
@@ -140,8 +152,10 @@ def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/api/authenticate", LoginHandler),
+        (r"/api/save_template", SaveTemplateHandler),
         (r"/api/query_book_mdata", SingleBookHandler),
-        (r"/api/query_mshopbook_data", MultiShopBookHandler),
+        (r"/api/query_mshopbook_init_data", MultiShopBookHandler),
+        (r"/api/query_mshopbook_data", MultiShopBookQueryHandler),
         (r"/api/query_concerned_data", ConcernedDataHandler),
     ])
 

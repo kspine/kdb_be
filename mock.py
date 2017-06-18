@@ -97,3 +97,15 @@ init = {
     'shop_list': shop_list,
     'book_list': book_list,
 }
+
+save_templ = {
+    'name': '李四-软件工程-销量',
+    'type': '销量',
+    'data': [
+        {
+            'shop': '人邮',
+            'isbn': '12345678',
+            'book': '软件工程'
+        }
+    ]
+}
