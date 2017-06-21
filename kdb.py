@@ -107,13 +107,19 @@ class MultiShopBookQueryHandler(BaseHandler):
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
         print('request')
-        print(param['data'][0])
+        print(param['data'])
         _type = param['type']
         _shop_book = [{'shop':i['shop'], 'book':i['book']} for i in param['data']]
 
         # 根据 type shop book, 查询 date, val
-        print(_type, _shop_book)
-        self.write(mock.data_query)
+        res = mock.data_query
+        res['data'] = [mock.data_query['data'][0]]
+        for i in range(len(_shop_book)-1):
+            print(i)
+            res['data'].append(mock.data_query['data'][0])
+        print('+++')
+        print(res)
+        self.write(res)
 
 class MultiShopBookSaveTemplateHandler(BaseHandler):
     def post(self):
