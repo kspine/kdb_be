@@ -98,10 +98,24 @@ class MultiShopBookHandler(BaseHandler):
 
 
 class MultiShopBookQueryHandler(BaseHandler):
-    def get(self):
-        print('hello get')
-        #self.redirect("http://localhost:4200/content")
-        self.write("Hello, world")
+    def post(self):
+        import mock
+
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        #self.write({'token': 'kylin_token'})
+        # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
+        # query by shop+book+datatype
+        print('request')
+        print(param['data'][0])
+        _type = param['type']
+        _shop_book = [{'shop':i['shop'], 'book':i['book']} for i in param['data']]
+
+        # 根据 type shop book, 查询 date, val
+        print(_type, _shop_book)
+        self.write(mock.data_query)
+
+class MultiShopBookSaveTemplateHandler(BaseHandler):
     def post(self):
         import mock
 
@@ -112,23 +126,7 @@ class MultiShopBookQueryHandler(BaseHandler):
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
         print('request')
-        self.write(mock.mb)
-
-class MultiShopBookSaveTemplateHandler(BaseHandler):
-    def get(self):
-        print('hello get')
-        #self.redirect("http://localhost:4200/content")
-        self.write("Hello, world")
-    def post(self):
-        import mock
-
-        param = self.request.body.decode('utf-8')
-        param = json.loads(param)
-        #self.write({'token': 'kylin_token'})
-        # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
-        # query by shop+book+datatype
-        print('request')
-        self.write(mock.mb)
+        self.write({'id':12345})
 
 class ConcernedDataHandler(BaseHandler):
     def get(self):
@@ -152,7 +150,7 @@ def make_app():
     return tornado.web.Application([
         (r"/", MainHandler),
         (r"/api/authenticate", LoginHandler),
-        (r"/api/save_template", SaveTemplateHandler),
+        (r"/api/save_template", MultiShopBookSaveTemplateHandler),
         (r"/api/query_book_mdata", SingleBookHandler),
         (r"/api/query_mshopbook_init_data", MultiShopBookHandler),
         (r"/api/query_mshopbook_data", MultiShopBookQueryHandler),
