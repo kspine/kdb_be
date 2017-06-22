@@ -108,7 +108,7 @@ class MultiShopBookQueryHandler(BaseHandler):
         # query by shop+book+datatype
         print('request')
         print(param['data'])
-        _type = param['type']
+        #_type = param['type']
         _shop_book = [{'shop':i['shop'], 'book':i['book']} for i in param['data']]
 
         # 根据 type shop book, 查询 date, val
