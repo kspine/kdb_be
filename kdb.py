@@ -112,9 +112,9 @@ class MultiShopBookQueryHandler(BaseHandler):
         _shop_book = [{'shop':i['shop'], 'book':i['book']} for i in param['data']]
 
         # 根据 type shop book, 查询 date, val
-        res = mock.data_query
-        res['data'] = [mock.data_query['data'][0]]
-        for i in range(len(_shop_book)-1):
+        res = {}
+        res['data'] = []
+        for i in range(len(_shop_book)):
             print(i)
             res['data'].append(mock.data_query['data'][0])
         print('+++')
