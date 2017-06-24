@@ -12,10 +12,17 @@ import json
 
 class BaseHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
+        # The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. Origin 'http://localhost:4200' is therefore not allowed access. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
         #self.set_header('Access-Control-Allow-Origin', 'http://kylin-ux.com:4200')
-        self.set_header('Access-Control-Allow-Origin', '*')
+        self.set_header('Access-Control-Allow-Origin', 'http://localhost:4200')
+        #self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+        # set-cookie in response not set for Angular2 post request
+        # because CORS
+        # return this.http.post('http://localhost:8888/api/query_mshopbook_init_data', JSON.stringify({}), { withCredentials: true })
+        # The value of the 'Access-Control-Allow-Credentials' header in the response is 'True' which must be 'true' when the request's credentials mode is 'include'. Origin 'http://localhost:4200' is therefore not allowed access. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
+        self.set_header('Access-Control-Allow-Credentials', 'true')
 
     def options(self):
         # no body
@@ -75,7 +82,7 @@ class LoginHandler(BaseHandler):
         if "admin" == getusername and "111111" == getpassword:
             self.set_secure_cookie("user", getusername)
             self.set_secure_cookie("incorrect", "0")
-            id_token = jwt.encode({'admin': '111111', 'exp':time.time()+10}, 'secret', algorithm='HS256').decode('utf8')
+            id_token = jwt.encode({'admin': '111111', 'exp':time.time()+3600}, 'secret', algorithm='HS256').decode('utf8')
             self.write({'id_token': id_token})
             #self.redirect(self.reverse_url("main"))
         else:
@@ -157,6 +164,8 @@ class MultiShopBookHandler(BaseHandler):
     def post(self):
         import mock
 
+        user = self.get_current_user()
+        print(user)
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
         #self.write({'token': 'kylin_token'})
