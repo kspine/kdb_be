@@ -66,8 +66,12 @@ class LoginHandler(BaseHandler):
     @tornado.gen.coroutine
     def post(self):
         incorrect = self.get_secure_cookie("incorrect")
-        if incorrect and int(incorrect) > 20:
-            self.write('<center>blocked</center>')
+        if incorrect and int(incorrect) > 200:
+            self.write({
+                "request" : "/api/authenticate",
+                "error_code" : "20502",
+                "error" : "Need you follow uid."
+            })
             return
 
         # getusername = tornado.escape.xhtml_escape(self.get_argument("username"))
