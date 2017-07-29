@@ -21,9 +21,9 @@ class ConfigHelper:
     def get_mysql_conn_info():
         conn = {'ip': '127.0.0.1',
                 'port': '3306',
-                'user': 'r7',
-                'passwd': 'r7',
-                'db': 'dip'}
+                'user': 'kdb',
+                'passwd': 'kdb',
+                'db': 'kdb'}
         key_list = ['ip', 'port', 'user', 'passwd', 'db']
         for key in key_list:
             v = config_parser.ConfigHandler('config.cfg', 'mysql').fread(key)
