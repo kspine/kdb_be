@@ -1,0 +1,14 @@
+DIP_HOME=/dip
+export DIP_HOME
+
+DIP_SERVICE_HOME=/home/kylin/workspace/dip-service
+export DIP_SERVICE_HOME
+
+ODBC_HOME=$DIP_SERVICE_HOME/dep/unixODBC
+export ODBC_HOME
+
+ODBCSYSINI=$ODBC_HOME/etc
+export ODBCSYSINI
+
+LD_LIBRARY_PATH=$DIP_SERVICE_HOME/dep/unixODBC/lib:$DIP_SERVICE_HOME/dep/oracle/lib
+export LD_LIBRARY_PATH

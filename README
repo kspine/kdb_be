@@ -1,0 +1,84 @@
+### gcc, gcc-c++
+yum install gcc gcc-c++
+
+### install python
+* download
+curl -OL https://www.python.org/ftp/python/3.6.1/Python-3.6.1.tgz
+
+* install dependency of pip
+yum install zlib-devel openssl-devel
+
+### install tornado
+/root/python36/bin/pip3 install tornado
+
+### install sqlalchemy
+/root/python36/bin/pip3 sqlalchemy
+
+### install unixODBC
+* download
+curl -OL http://www.unixodbc.org/unixODBC-2.3.4.tar.gz
+tar zxf unixODBC-2.3.4.tar.gz
+
+* build
+mkdir unixODBC
+cd unixODBC-2.3.4
+./configure --prefix=/root/repo/dip-service/dep/unixODBC
+make -j8
+make install
+
+### install pyodbc
+/root/python36/bin/pip3 install pyodbc --global-option=build_ext --global-option="-I/root/repo/dip-service/dep/unixODBC/include" --global-option="-L/root/repo/dip-service/dep/unixODBC/lib"
+
+> gcc gcc-c++ unixODBC-devel, dependency of pyodbc
+
+### install pymysql
+/root/python36/bin/pip3 pymysql
+
+### install dicttoxml
+/root/python36/bin/pip3 dicttoxml
+
+### install pycrypto
+/root/python36/bin/pip3 pycrypto
+
+### oracle lib
+instantclient_12_2/{basic,odbc}
+
+### other
+https://github.com/mkleehammer/pyodbc/wiki/Connecting-to-Oracle-from-RHEL-or-Centos
+
+python -c "import pyodbc; print(pyodbc.connect('DRIVER=MyOracle;DBQ=x.x.x.x:1521/orcl;UID=myuid;PWD=mypwd'))"
+
+[r7@localhost test]$ gdb python3
+GNU gdb (GDB) Red Hat Enterprise Linux 7.6.1-94.el7
+Copyright (C) 2013 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-redhat-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /usr/bin/python3.4...Reading symbols from /usr/bin/python3.4...(no debugging symbols found)...done.
+(no debugging symbols found)...done.
+Missing separate debuginfos, use: debuginfo-install python34-3.4.5-4.el7.x86_64
+(gdb) r ./business_mock.py 
+Starting program: /usr/bin/python3 ./business_mock.py
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib64/libthread_db.so.1".
+
+Program received signal SIGSEGV, Segmentation fault.
+0x00007ffff79e776b in PyDict_SetItem () from /lib64/libpython3.4m.so.1.0
+(gdb) bt
+#0  0x00007ffff79e776b in PyDict_SetItem () from /lib64/libpython3.4m.so.1.0
+#1  0x00007fffedddf983 in GetConnectionInfo (pConnectionString=pConnectionString@entry=0x7ffff7ed24e0, cnxn=cnxn@entry=0x7ffff0521850) at src/cnxninfo.cpp:167
+#2  0x00007fffedde1552 in Connection_New (pConnectString=0x7ffff7ed24e0, fAutoCommit=false, fAnsi=<optimized out>, timeout=timeout@entry=0, fReadOnly=<optimized out>, attrs_before=<optimized out>, encoding=...)
+at src/connection.cpp:302
+#3  0x00007fffedde85ec in mod_connect (self=<optimized out>, args=<optimized out>, kwargs=<optimized out>) at src/pyodbcmodule.cpp:509
+#4  0x00007ffff7a64782 in PyEval_EvalFrameEx () from /lib64/libpython3.4m.so.1.0
+#5  0x00007ffff7a6554e in PyEval_EvalCodeEx () from /lib64/libpython3.4m.so.1.0
+#6  0x00007ffff7a6561b in PyEval_EvalCode () from /lib64/libpython3.4m.so.1.0
+#7  0x00007ffff7a816c4 in run_mod () from /lib64/libpython3.4m.so.1.0
+#8  0x00007ffff7a83c0d in PyRun_FileExFlags () from /lib64/libpython3.4m.so.1.0
+#9  0x00007ffff7a853d1 in PyRun_SimpleFileExFlags () from /lib64/libpython3.4m.so.1.0
+#10 0x00007ffff7a9adfc in Py_Main () from /lib64/libpython3.4m.so.1.0
+#11 0x0000000000400ad9 in main ()

@@ -1,0 +1,59 @@
+insert into T_BASIC_BOOK (book, name) values ('9787115394392', 'Python参考手册(第4版·修订版)'), ('9787115454898', 'Python高性能编程'), ('9787115414779', 'Python核心编程 第3版'), ('9787115339409', 'Python数据分析基础教程：NumPy学习指南(第2版)');
+
+insert into T_BASIC_SHOP (shop, name, url) values ('rmydcbs', '人民邮电出版社官方旗舰店', 'rmydcbs.tmall.com'), ('winshare', '新华文轩网络书店', 'winshare.tmall.com');
+
+insert into T_BASIC_SHOPBOOK (book, shop, url) values
+('9787115394392', 'rmydcbs', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.15.79c15d8JGRW05&id=539853070197&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4'),
+('9787115394392', 'winshare', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.182.56695febowhWBN&id=541143731300&rn=03fe8410363b4538f2f02b7d90e22ba4&abbucket=4'),
+('9787115454898', 'rmydcbs', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.23.79c15d8JGRW05&id=553391639537&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4'),
+('9787115454898', 'winshare', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.158.56695febowhWBN&id=554411773451&rn=03fe8410363b4538f2f02b7d90e22ba4&abbucket=4'),
+('9787115414779', 'rmydcbs', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.85.79c15d8JGRW05&id=531816970861&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4'),
+('9787115339409', 'winshare', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.37.56695febhnM8kb&id=37215987064&rn=b0839a25c9ec7531185bbb7755cda98c&abbucket=4');
+
+
+
+shop:
+id: rmydcbs
+name: 人民邮电出版社官方旗舰店
+url: https://rmydcbs.tmall.com
+
+id: winshare
+name: 新华文轩网络书店
+url: https://winshare.tmall.com
+
+
+book:
+人邮: 
+isbn: 9787115394392
+name: Python参考手册(第4版·修订版)
+https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.15.79c15d8JGRW05&id=539853070197&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4
+
+9787115454898
+Python高性能编程
+https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.23.79c15d8JGRW05&id=553391639537&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4
+
+9787115414779
+Python核心编程 第3版
+https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.85.79c15d8JGRW05&id=531816970861&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4
+
+9787115339409
+Python数据分析基础教程：NumPy学习指南(第2版)
+https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.25.79c15d8JGRW05&id=523758204148&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4
+
+
+文轩:
+9787115394392
+Python参考手册(第4版·修订版)
+https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.182.56695febowhWBN&id=541143731300&rn=03fe8410363b4538f2f02b7d90e22ba4&abbucket=4
+
+9787115454898
+Python高性能编程
+https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.158.56695febowhWBN&id=554411773451&rn=03fe8410363b4538f2f02b7d90e22ba4&abbucket=4
+
+9787115414779
+Python核心编程 第3版
+https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.86.56695febowhWBN&id=532546415224&rn=03fe8410363b4538f2f02b7d90e22ba4&abbucket=4
+
+9787115339409
+Python数据分析基础教程:NumPy学习指南(第2版)
+https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.37.56695febhnM8kb&id=37215987064&rn=b0839a25c9ec7531185bbb7755cda98c&abbucket=4
