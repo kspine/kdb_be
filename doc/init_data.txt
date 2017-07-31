@@ -1,3 +1,7 @@
+grant all privileges on *.* to kdb@localhost identified by 'kdb';
+
+create database kdb default charset utf8;
+
 CREATE TABLE `T_BASIC_BOOK` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `book` varchar(20) DEFAULT NULL,

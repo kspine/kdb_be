@@ -1,3 +1,96 @@
+0. 公用
+    api: api/query_book_list
+    in:
+    {}
+    out:
+    ```
+    [
+        {
+            'book': '',
+            'name': ''
+        },
+        {
+        }
+    ]
+    ```
+    api: api/query_shop_list
+
+    in:
+    {}
+    out:
+    ```
+    [
+        {
+            'book': '',
+            'name': ''
+        },
+        {
+        }
+    ]
+    ```
+    api: api/query_shopbook_list
+    in:
+    {}
+    out:
+    ```
+    [
+        {
+            'shop': '',
+            'name': '',
+            'book_list': [
+                {
+                    'book': '',
+                    'name': ''
+                },
+                {}
+            ]
+        },
+        {}
+    ]
+    ```
+    api: api/query_temp_list
+    in:
+    {}
+    out:
+    ```
+    [
+    {
+        'id': '123',
+        'name': '张三-软件工程-销量',
+        #'type': '销量',
+        'shopbook_list': [
+            {'shop': '', 'shop_name': '人邮', 'book': '', 'book_name': ''},
+            {}
+        ]
+    },
+    {
+        'id': '456',
+        'name': '李四-软件工程-销量',
+        #'type': '销量',
+        'data': [
+            {
+                'shop': {'id': '', 'text': '人邮'},
+                'book': {'id': '软件工程', 'text': '软件工程'}
+            }
+        ]
+    }
+]
+    ```
+    api: api/query_datatype_list
+    in:
+    {}
+    out:
+    ```
+    [
+        {'id':'测试', 'text':'测试'},
+        {'id':'售价', 'text':'售价'},
+        {'id':'折扣', 'text':'折扣'},
+        {'id':'销量', 'text':'销量'},
+        {'id':'评论数', 'text':'评论数'},
+        {'id':'直通车投入', 'text':'直通车投入'}
+    ]
+    ```
+
 1. 单品销售情况查询
    api: api/query_book_mdata
    in: ISBN 日期
