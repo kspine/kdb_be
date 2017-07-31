@@ -3,6 +3,7 @@
 import jwt
 import tornado.web
 
+import datetime
 import time
 import json
 
@@ -188,7 +189,34 @@ class MultiShopBookHandler(BaseHandler):
         datatype = '销量'
         start = datetime.date(2017, 7, 27)
         end = datetime.datetime.now()
-        data = Book.query_data(shop, book, datatype, start, end)
+        #data = Book.query_data(shop, book, datatype, start, end)
+        # shopbook_list
+        shopbook_list = []
+        from component.shop import Shop
+        shop_name_list = Shop.get_shop_name_list()
+        book_name_list =  []
+        for s in shop_name_list:
+            r = Shop.get_book_name_list(s[0])
+            shopbook_list.append({'id': s[0], 'text': s[1], 'data':[ {'id': i[0], 'text': i[1]} for i in r]})
+
+        print(shopbook_list)
+        # datatype_list
+        # template_list
+        from data_model.table import T_Business_Template
+        r = T_Business_Template.all()
+        temp_list = []
+        for i in r:
+            for t in temp_list:
+                if i[0] == t['id']:
+                    t['data'].append({'id': i[2], 'text':i[3]})
+                    break
+            else:
+                temp_list.append({'id': i[0], 'text': i[1], 'data': [{'id': i[2], 'text': i[3]}]})
+        print(temp_list)
+
+        # shopbook_data
+        mock.init['shop_book_list'] = shopbook_list
+        mock.init['template_list'] = temp_list
         self.write(mock.init)
 
 

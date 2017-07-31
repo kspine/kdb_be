@@ -21,7 +21,7 @@ class DbHandler:
 
     def init_engine(self):
         conn_info = ConfigHelper.get_mysql_conn_info()
-        self.engine = create_engine("mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8".format(
+        self.engine = create_engine("mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8&unix_socket=/dip/mysql/mysql.sock".format(
             conn_info['user'],
             conn_info['passwd'],
             conn_info['ip'],

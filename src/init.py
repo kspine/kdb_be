@@ -10,6 +10,11 @@ from data_model.table import create_table
 def init():
     db_hdl = DbHandler()
     create_table()
+    return
+
+    from component.shop import Shop
+    Shop.get_shop_list()
+    exit(0)
 
     from component.book import Book
     #_id = T_Business_Template.add('xxx', [('s1', 'b1'),('s2', 'b2')])

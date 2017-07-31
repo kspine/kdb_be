@@ -1,4 +1,4 @@
-
+from data_model.table import T_Business_Template
 
 class Template:
     def __init__(self, _id, _name, _value):
@@ -14,4 +14,7 @@ class Template:
 
     @staticmethod
     def all():
-        pass
+        book_list = T_BUSINESS_TEMPLATE.query_book_list(shop)
+        book_name_list = T_Basic_Book.query_book_name_list(book_list)
+        return book_name_list
+

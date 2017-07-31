@@ -43,12 +43,19 @@ class T_Basic_Book(Base, T_Base):
     book = Column(String(20))
     name = Column(String(32))
 
-
     #@staticmethod
     @classmethod
     def query_book_list(cls):
         r = cls.db_hdl.session.query(cls.id).filter().all()
-        print(r)
+        return r
+
+    @classmethod
+    def query_book_name_list(cls, book_list):
+        #book_tuple = tuple([book[0] for book in book_list])
+        book_tuple = tuple(book_list)
+        r = cls.db_hdl.session.query(cls.book, cls.name).filter(cls.book.in_(book_tuple)).all()
+        return r
+
 
 class T_Basic_Shop(Base, T_Base):
     __tablename__ = 'T_BASIC_SHOP'
@@ -57,6 +64,18 @@ class T_Basic_Shop(Base, T_Base):
     shop = Column(String(20))
     name = Column(String(32))
     url = Column(String(1024))
+
+    @classmethod
+    def query_shop_list(cls):
+        # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
+        r = cls.db_hdl.session.query(cls.shop).filter().all()
+        return r
+
+    @classmethod
+    def query_shop_name_list(cls):
+        # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
+        r = cls.db_hdl.session.query(cls.shop, cls.name).filter().all()
+        return r
 
 
 class T_Basic_ShopBook(Base, T_Base):
@@ -72,6 +91,12 @@ class T_Basic_ShopBook(Base, T_Base):
         # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
         r = cls.db_hdl.session.query(cls.id).filter(cls.shop==shop, cls.book==book).first()
         return r
+
+    @classmethod
+    def query_book_list(cls, shop):
+        # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
+        r = cls.db_hdl.session.query(cls.book).filter(cls.shop==shop).all()
+        return [i[0] for i in r]
 
 class T_Data(Base, T_Base):
     __tablename__ = 'T_DATA'
@@ -119,7 +144,13 @@ class T_Business_Template(Base, T_Base):
         r = cls.db_hdl.session.query(cls.name).filter(cls.id==temp_id).first()
         name = r[0]
         r = cls.db_hdl.session.query(T_Business_TemplateData.shop, T_Business_TemplateData.book).filter(T_Business_TemplateData.temp_id==temp_id).all()
-        print(temp_id, name, r)
+        return r
+
+    @classmethod
+    def all(cls):
+        #r = cls.db_hdl.session.query(cls.name).filter().first()
+        #name = r[0]
+        r = cls.db_hdl.session.query(cls.id, cls.name, T_Business_TemplateData.shop, T_Business_TemplateData.book).filter(cls.id == T_Business_TemplateData.temp_id).all()
         return r
 
 
