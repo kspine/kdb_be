@@ -150,7 +150,7 @@ class T_Business_Template(Base, T_Base):
     def all(cls):
         #r = cls.db_hdl.session.query(cls.name).filter().first()
         #name = r[0]
-        r = cls.db_hdl.session.query(cls.id, cls.name, T_Business_TemplateData.shop, T_Business_TemplateData.book).filter(cls.id == T_Business_TemplateData.temp_id).all()
+        r = cls.db_hdl.session.query(cls.id, cls.name, T_Business_TemplateData.shop, T_Basic_Shop.name, T_Business_TemplateData.book, T_Basic_Book.name).filter(cls.id == T_Business_TemplateData.temp_id, T_Business_TemplateData.shop == T_Basic_Shop.shop, T_Business_TemplateData.book == T_Basic_Book.book).all()
         return r
 
 

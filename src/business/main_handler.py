@@ -208,10 +208,10 @@ class MultiShopBookHandler(BaseHandler):
         for i in r:
             for t in temp_list:
                 if i[0] == t['id']:
-                    t['data'].append({'id': i[2], 'text':i[3]})
+                    t['data'].append({'shop': {'id': i[2], 'text':i[3]}, 'book': {'id': i[4], 'text':i[5]}})
                     break
             else:
-                temp_list.append({'id': i[0], 'text': i[1], 'data': [{'id': i[2], 'text': i[3]}]})
+                temp_list.append({'id': i[0], 'text': i[1], 'data': [{'shop': {'id': i[2], 'text': i[3]}, 'book': {'id': i[4], 'text': i[5]}}]})
         print(temp_list)
 
         # shopbook_data
