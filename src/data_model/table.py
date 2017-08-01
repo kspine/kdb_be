@@ -25,9 +25,14 @@ class T_User(Base):
 class T_Config_Datatype(Base, T_Base):
     __tablename__ = 'T_CONFIG_DATATYPE'
 
-    id = Column(Integer, primary_key=True)
+    # id = Column(Integer, primary_key=True)
+    id = Column(String(20), primary_key=True)
     name = Column(String(20))
 
+    @classmethod
+    def query_datatype(cls):
+        r = cls.db_hdl.session.query(cls.id, cls.name).all()
+        return r
 
 class T_Config_Category(Base, T_Base):
     __tablename__ = 'T_CONFIG_CATEGORY'
@@ -50,6 +55,11 @@ class T_Basic_Book(Base, T_Base):
         return r
 
     @classmethod
+    def query_name(cls, book):
+        r = cls.db_hdl.session.query(cls.name).filter(cls.book == book).first()
+        return r
+
+    @classmethod
     def query_book_name_list(cls, book_list):
         #book_tuple = tuple([book[0] for book in book_list])
         book_tuple = tuple(book_list)
@@ -69,6 +79,11 @@ class T_Basic_Shop(Base, T_Base):
     def query_shop_list(cls):
         # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
         r = cls.db_hdl.session.query(cls.shop).filter().all()
+        return r
+
+    @classmethod
+    def query_name(cls, shop):
+        r = cls.db_hdl.session.query(cls.name).filter(cls.shop == shop).first()
         return r
 
     @classmethod

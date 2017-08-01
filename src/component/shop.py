@@ -22,6 +22,11 @@ class Shop:
         return book_list
 
     @staticmethod
+    def query_name(shop):
+        r = T_Basic_Shop.query_name(shop)
+        return r
+
+    @staticmethod
     def get_book_name_list(shop):
         book_list = T_Basic_ShopBook.query_book_list(shop)
         book_name_list = T_Basic_Book.query_book_name_list(book_list)

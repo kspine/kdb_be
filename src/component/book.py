@@ -18,6 +18,11 @@ class Book:
         pass
 
     @staticmethod
+    def query_name(book):
+        r = T_Basic_Book.query_name(book)
+        return r
+
+    @staticmethod
     def add_data(shop, book, datatype, date, value):
         r = T_Basic_ShopBook.query_shopbook_id(shop, book)
         if r is None:

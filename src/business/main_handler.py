@@ -183,26 +183,47 @@ class MultiShopBookHandler(BaseHandler):
         print('request')
         # type, [(shop, book),] -> [(date, value),]
         from component.book import Book
+        from component.shop import Shop
+        from data_model.table import T_Config_Datatype
+        from data_model.table import T_Business_Template
         # r = Book.query_data('winshare', '9787115394392', '销量', datetime.date(2017, 7, 27), datetime.datetime.now());
-        shop = 'winshare'
-        book = '9787115394392'
-        datatype = '销量'
-        start = datetime.date(2017, 7, 27)
-        end = datetime.datetime.now()
-        #data = Book.query_data(shop, book, datatype, start, end)
+        data = {}
+        while True:
+            shop = 'rmydcbs'
+            book = '9787115394392'
+            datatype = 'price'
+            start = datetime.date(2017, 7, 27)
+            end = datetime.datetime.now()
+
+            shop_name = Shop.query_name(shop)
+            book_name = Book.query_name(book)
+            _data = Book.query_data(shop, book, datatype, start, end)
+            data = {
+                'type': datatype,
+                'data': [
+                    {
+                        'shop': {'id': shop, 'text': shop_name},
+                        'book': {'id': book, 'text': book_name},
+                        'date': [str(i[0]) for i in _data],
+                        'value': [i[1] for i in _data]
+                    }
+                ]
+            }
+            break
+
         # shopbook_list
         shopbook_list = []
-        from component.shop import Shop
         shop_name_list = Shop.get_shop_name_list()
         book_name_list =  []
         for s in shop_name_list:
             r = Shop.get_book_name_list(s[0])
             shopbook_list.append({'id': s[0], 'text': s[1], 'data':[ {'id': i[0], 'text': i[1]} for i in r]})
 
-        print(shopbook_list)
         # datatype_list
+        r = T_Config_Datatype.query_datatype()
+        datatype_list = [{'id': i[0], 'text': i[1]} for i in r]
+
         # template_list
-        from data_model.table import T_Business_Template
         r = T_Business_Template.all()
         temp_list = []
         for i in r:
@@ -212,11 +233,12 @@ class MultiShopBookHandler(BaseHandler):
                     break
             else:
                 temp_list.append({'id': i[0], 'text': i[1], 'data': [{'shop': {'id': i[2], 'text': i[3]}, 'book': {'id': i[4], 'text': i[5]}}]})
-        print(temp_list)
 
         # shopbook_data
         mock.init['shop_book_list'] = shopbook_list
         mock.init['template_list'] = temp_list
+        mock.init['datatype_list'] = datatype_list
+        mock.init['data'] = data
         self.write(mock.init)
 
 
