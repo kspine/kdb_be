@@ -197,6 +197,7 @@ class MultiShopBookHandler(BaseHandler):
 
             shop_name = Shop.query_name(shop)
             book_name = Book.query_name(book)
+            print(shop_name, book_name)
             _data = Book.query_data(shop, book, datatype, start, end)
             data = {
                 'type': datatype,
@@ -276,11 +277,16 @@ class MultiShopBookSaveTemplateHandler(BaseHandler):
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
         print(param)
+        # {'text': '123', 'data': [{'book': {'text': 'Python参考手册(第4版·修订版)', 'id': '9787115394392'}, 'shop': {'text': '人民邮电出版社官方旗舰店', 'id': 'rmydcbs'}}], 'id': '123'}
         #self.write({'token': 'kylin_token'})
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
-        print('request')
-        self.write({'id':12345})
+        value = []
+        for i in param['data']:
+            value.append((i['shop']['id'], i['book']['id']))
+        from data_model.table import T_Business_Template
+        _id = T_Business_Template.add(param['text'], value)
+        self.write({'id':_id})
 
 class ConcernedDataHandler(BaseHandler):
     @tornado.web.authenticated

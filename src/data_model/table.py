@@ -57,7 +57,9 @@ class T_Basic_Book(Base, T_Base):
     @classmethod
     def query_name(cls, book):
         r = cls.db_hdl.session.query(cls.name).filter(cls.book == book).first()
-        return r
+        if r is None:
+            return r
+        return r[0]
 
     @classmethod
     def query_book_name_list(cls, book_list):
@@ -84,7 +86,9 @@ class T_Basic_Shop(Base, T_Base):
     @classmethod
     def query_name(cls, shop):
         r = cls.db_hdl.session.query(cls.name).filter(cls.shop == shop).first()
-        return r
+        if r is None:
+            return r
+        return r[0]
 
     @classmethod
     def query_shop_name_list(cls):
@@ -145,6 +149,8 @@ class T_Business_Template(Base, T_Base):
         cls.db_hdl.session.add(t)
         cls.db_hdl.session.flush() # or, t.id is None
 
+        _id = t.id
+
         # select last_insert_id
         _list = []
         for v in values:
@@ -153,11 +159,11 @@ class T_Business_Template(Base, T_Base):
             _list.append(T_Business_TemplateData(temp_id=t.id, shop=shop, book=book))
         cls.db_hdl.session.bulk_save_objects(_list)
         cls.db_hdl.session.commit()
+        return _id
 
     @classmethod
     def query(cls, temp_id):
         r = cls.db_hdl.session.query(cls.name).filter(cls.id==temp_id).first()
-        name = r[0]
         r = cls.db_hdl.session.query(T_Business_TemplateData.shop, T_Business_TemplateData.book).filter(T_Business_TemplateData.temp_id==temp_id).all()
         return r
 
