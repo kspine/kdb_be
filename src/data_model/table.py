@@ -1,5 +1,6 @@
 
 import sqlalchemy
+from sqlalchemy import func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy import Integer, String, DATETIME
@@ -62,7 +63,13 @@ class T_Basic_Book(Base, T_Base):
         return r[0]
 
     @classmethod
-    def query_book_name_list(cls, book_list):
+    def query_book_name_list(cls):
+        #book_tuple = tuple([book[0] for book in book_list])
+        r = cls.db_hdl.session.query(cls.book, cls.name).filter().all()
+        return r
+
+    @classmethod
+    def query_book_name_list_by_book(cls, book_list):
         #book_tuple = tuple([book[0] for book in book_list])
         book_tuple = tuple(book_list)
         r = cls.db_hdl.session.query(cls.book, cls.name).filter(cls.book.in_(book_tuple)).all()
@@ -120,19 +127,33 @@ class T_Basic_ShopBook(Base, T_Base):
 class T_Data(Base, T_Base):
     __tablename__ = 'T_DATA'
 
-    sb_id = Column(Integer, primary_key=True)
-    datatype = Column(String(20))
+    # sb_id = Column(Integer, primary_key=True)
+    shop = Column(String(20), primary_key=True)
+    book = Column(String(20), primary_key=True)
+    datatype = Column(String(20), primary_key=True)
     value = Column(Integer)
-    date = Column(DATETIME)
+    date = Column(DATETIME, primary_key=True)
 
     @classmethod
-    def add(cls, sb_id, datatype, date, value):
-        cls.db_hdl.session.add(cls(sb_id=sb_id, datatype=datatype, date=date, value=value))
+    def add(cls, shop, book, datatype, date, value):
+        cls.db_hdl.session.add(cls(shop=shop, book=book, datatype=datatype, date=date, value=value))
         cls.db_hdl.session.commit()
 
     @classmethod
-    def query(cls, sb_id, datatype, start, end):
-        r = cls.db_hdl.session.query(cls.date, cls.value).filter(cls.sb_id==sb_id, cls.date>=start, cls.date<end).all()
+    def query(cls, shop, book, datatype, start, end):
+        r = cls.db_hdl.session.query(cls.date, cls.value).filter(cls.shop==shop, cls.book==book, cls.datatype==datatype, cls.date>=start, cls.date<end).all()
+        return r
+
+    @classmethod
+    def query_anyshop_anytype(cls, book, start, end):
+        # print(book, start, end)
+        # q = cls.db_hdl.session.query(cls.shop, cls.datatype, cls.date, cls.value).filter(cls.book==book, cls.date>=start, cls.date<end)
+        # r = q.all()
+        # print(q)
+
+        # r = cls.db_hdl.session.query(cls.shop, cls.datatype, func.concat(cls.date), cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
+        # r = cls.db_hdl.session.query(cls.shop, cls.datatype, func.concat(func.DATE(cls.date)), cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
+        r = cls.db_hdl.session.query(cls.shop, cls.datatype, cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
         return r
 
 

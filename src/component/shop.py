@@ -29,7 +29,7 @@ class Shop:
     @staticmethod
     def get_book_name_list(shop):
         book_list = T_Basic_ShopBook.query_book_list(shop)
-        book_name_list = T_Basic_Book.query_book_name_list(book_list)
+        book_name_list = T_Basic_Book.query_book_name_list_by_book(book_list)
         return book_name_list
 
     @staticmethod

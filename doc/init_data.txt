@@ -87,7 +87,7 @@ insert into T_BUSINESS_TEMPLATE_DATA (temp_id, shop, book) values (1, 'rmydcbs',
 insert into t_config_datatype values ('price', '售价'), ('sale', '销量'), ('discount', '折扣'), ('comment', '评论数'), ('investment', '直通车投入');
 
 insert into t_data values (1, 'price', 5, '2017/08/01');
-
+insert into t_data values (1, 'sale', 10, '2017-08-01');
 
 shop:
 id: rmydcbs

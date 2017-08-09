@@ -91,9 +91,26 @@
     ]
     ```
 
+1. 单品初始化
+   api: api/query_book_mshop_init_data
+   in:
+   {}
+
+   out:
+   ```
+   [
+        {'id': '', 'text': ''},
+   ]
+   ```
+
+
 1. 单品销售情况查询
-   api: api/query_book_mdata
+   api: /api/query_book_mshop_data
    in: ISBN 日期
+   {
+    'book': {'id': '', 'text': ''},
+    'period': {}
+    }
    > 日期, 具体某一天, 最近一周, 最近一月等
 
    ```
@@ -161,6 +178,16 @@
        }
    ]
    ```
+
+   查询宫格内容
+
+   api: /api/query_mshopbook_data
+   in:
+   ```
+{'type': 'price', 'data': [{'book': {'text': 'Python参考手册(第4版·修订版)', 'id': '9787115394392'}, 'shop': {'text': '人民邮电出版社官方旗舰店', 'id': 'rmydcbs'}}, {'book': {'text': 'Python高性能编程', 'id': '9787115454898'}, 'shop': {'text': '新华文轩网络书店', 'id': 'winshare'}}]}
+```
+    out:
+
   
 3. 某类目特殊表现监
    api: api/query_concerned_data

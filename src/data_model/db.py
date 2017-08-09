@@ -21,12 +21,14 @@ class DbHandler:
 
     def init_engine(self):
         conn_info = ConfigHelper.get_mysql_conn_info()
-        self.engine = create_engine("mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8&unix_socket=/dip/mysql/mysql.sock".format(
+        self.engine = create_engine("mysql+pymysql://{0}:{1}@{2}:{3}/{4}?charset=utf8&unix_socket={}".format(
             conn_info['user'],
             conn_info['passwd'],
             conn_info['ip'],
             conn_info['port'],
-            conn_info['db']), echo=False)
+            conn_info['db'],
+            conn_info['sock'],
+        ), echo=False)
 
     def init_session(self):
         Session = sessionmaker(bind=self.engine)

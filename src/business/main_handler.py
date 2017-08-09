@@ -7,6 +7,9 @@ import datetime
 import time
 import json
 
+from component.book import Book
+from component.shop import Shop
+
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("Hello, world")
@@ -87,6 +90,7 @@ class LoginHandler(BaseHandler):
         getusername = param['username']
         getpassword = param['password']
         #self.write({'token': 'kylin_token'})
+        print(param)
 
         if "admin" == getusername and "111111" == getpassword:
             self.set_secure_cookie("user", getusername)
@@ -155,6 +159,65 @@ class SingleBookHandler(BaseHandler):
             })
 
 
+class BookMultiShopHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        print(user)
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+
+        # out
+        # [{'id': '', 'text': ''}, ]
+        r = Book.get_book_name_list()
+        print(r)
+        self.write({'data':r})
+
+
+class BookMultiShopQueryHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        print(user)
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        print(param)
+
+        book = param['book']
+        period = param['period']
+
+        start = datetime.date(2017, 7, 27)
+        end = datetime.datetime.now()
+
+        # out
+        # [{'id': '', 'text': ''}, ]
+        # [('shop', 'datatype', 'value'), ]
+        r = Book.query_data_anyshop_anytype(book['id'], start, end)
+        # [{'shop': '', 'price': '1', 'sale': 2}, ]
+        data = []
+        for i in r:
+            for shop in data:
+                if i[0] == shop['shop']:
+                    shop.setdefault(i[1], i[2])
+                    break
+            else:
+                data.append({'shop': i[0], i[1]: i[2]})
+
+        for i in data:
+            for k in ['shop', 'price', 'discount', 'sale', 'comment', 'inv']:
+                if k not in i:
+                    i[k] = 0
+        self.write({'data':data})
+        # self.write({'data':[{
+        #     'shop': '人邮',
+        #     'price': '11.2',
+        #     'discount': 5,
+        #     'sale': 839,
+        #     'comment': 99999,
+        #         'inv': 208.178
+        #           }]})
+
+
 class MultiShopBookHandler(BaseHandler):
     """Query last record,
     all datatype
@@ -162,6 +225,34 @@ class MultiShopBookHandler(BaseHandler):
     all shop list
     all book list
     """
+
+    @classmethod
+    def query_data(cls, shop, book, datatype, start, end):
+        data = {}
+        shop_name = Shop.query_name(shop)
+        book_name = Book.query_name(book)
+        _data = Book.query_data(shop, book, datatype, start, end)
+        if _data is None:
+            return data
+
+        data = {
+            'shop': {'id': shop, 'text': shop_name},
+            'book': {'id': book, 'text': book_name},
+            'date': [str(i[0]) for i in _data],
+            'value': [i[1] for i in _data]
+        }
+
+        return data
+
+    @classmethod
+    def query_data_list(cls, shopbook_list, datatype, start, end):
+        data = {}
+        data['type'] = datatype
+        data['data'] = []
+        for shopbook in shopbook_list:
+            _data = cls.query_data(shopbook[0], shopbook[1], datatype, start, end)
+            data['data'].append(_data)
+        return data
 
     @tornado.web.authenticated
     def get(self):
@@ -182,36 +273,18 @@ class MultiShopBookHandler(BaseHandler):
         # query by shop+book+datatype
         print('request')
         # type, [(shop, book),] -> [(date, value),]
-        from component.book import Book
-        from component.shop import Shop
         from data_model.table import T_Config_Datatype
         from data_model.table import T_Business_Template
         # r = Book.query_data('winshare', '9787115394392', '销量', datetime.date(2017, 7, 27), datetime.datetime.now());
-        data = {}
-        while True:
-            shop = 'rmydcbs'
-            book = '9787115394392'
-            datatype = 'price'
-            start = datetime.date(2017, 7, 27)
-            end = datetime.datetime.now()
 
-            shop_name = Shop.query_name(shop)
-            book_name = Book.query_name(book)
-            print(shop_name, book_name)
-            _data = Book.query_data(shop, book, datatype, start, end)
-            data = {
-                'type': datatype,
-                'data': [
-                    {
-                        'shop': {'id': shop, 'text': shop_name},
-                        'book': {'id': book, 'text': book_name},
-                        'date': [str(i[0]) for i in _data],
-                        'value': [i[1] for i in _data]
-                    }
-                ]
-            }
-            break
 
+        shop = 'rmydcbs'
+        book = '9787115394392'
+        datatype = 'price'
+        start = datetime.date(2017, 7, 27)
+        end = datetime.datetime.now()
+
+        data = self.query_data_list([(shop, book)], datatype, start, end)
         # shopbook_list
         shopbook_list = []
         shop_name_list = Shop.get_shop_name_list()
@@ -251,22 +324,20 @@ class MultiShopBookQueryHandler(BaseHandler):
 
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
+        # {'data': [{'book': {'text': 'Python参考手册(第4版·修订版)', 'id': '9787115394392'}, 'shop': {'text': '人民邮电出版社官方旗舰店', 'id': 'rmydcbs'}}], 'type': 'price'}
         #self.write({'token': 'kylin_token'})
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
-        print('request')
-        print(param['data'])
+        print(param)
         #_type = param['type']
-        _shop_book = [{'shop':i['shop'], 'book':i['book']} for i in param['data']]
 
         # 根据 type shop book, 查询 date, val
-        res = {}
-        res['data'] = []
-        for i in range(len(_shop_book)):
-            print(i)
-            res['data'].append(mock.data_query['data'][0])
-        print('+++')
-        print(res)
+        shopbook_list = [(i['shop']['id'], i['book']['id']) for i in param['data']]
+        datatype = param['type']
+        start = datetime.date(2017, 7, 27)
+        end = datetime.datetime.now()
+
+        res = MultiShopBookHandler.query_data_list(shopbook_list, datatype, start, end)
         self.write(res)
 
 class MultiShopBookSaveTemplateHandler(BaseHandler):
