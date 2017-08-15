@@ -1,7 +1,10 @@
 
 -- grant all privileges on *.* to kdb@localhost identified by 'kdb';
 
--- create database kdb default charset utf8;
+drop database kdb;
+create database kdb default charset utf8;
+
+use kdb;
 
 -- DROP TABLE IF EXISTS T_BASIC_BOOK;
 -- DROP TABLE IF EXISTS T_BASIC_SHOP;
@@ -66,9 +69,12 @@ CREATE TABLE `T_DATA` (
   `book` varchar(20) DEFAULT NULL,
   `datatype` varchar(20) DEFAULT NULL,
   `value` int(11) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  PRIMARY KEY (`sb_id`)
+  `date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+insert into T_CONFIG_DATATYPE values ('price', '售价'), ('sale', '销量'), ('discount', '折扣'), ('comment', '评论数'), ('investment', '直通车投入');
 
 
 
@@ -84,11 +90,9 @@ insert into T_BASIC_SHOPBOOK (book, shop, url) values
 ('9787115414779', 'rmydcbs', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.85.79c15d8JGRW05&id=531816970861&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4'),
 ('9787115339409', 'winshare', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b-s.w4011-15011179809.37.56695febhnM8kb&id=37215987064&rn=b0839a25c9ec7531185bbb7755cda98c&abbucket=4');
 
-insert into T_BUSINESS_TEMPLATE (name) values ('竞品页模板-python');
-insert into T_BUSINESS_TEMPLATE_DATA (temp_id, shop, book) values (1, 'rmydcbs', '9787115394392'), (1, 'winshare', '9787115394392');
+-- insert into T_BUSINESS_TEMPLATE (name) values ('竞品页模板-python');
+-- insert into T_BUSINESS_TEMPLATE_DATA (temp_id, shop, book) values (1, 'rmydcbs', '9787115394392'), (1, 'winshare', '9787115394392');
 
-insert into t_config_datatype values ('price', '售价'), ('sale', '销量'), ('discount', '折扣'), ('comment', '评论数'), ('investment', '直通车投入');
-
-insert into t_data values ('rmydcbs', '9787115394392', 'price', 5, '2017/08/01');
-insert into t_data values ('rmydcbs', '9787115454898', 'sale', 10, '2017-08-01');
-insert into t_data values ('winshare', '9787115394392', 'sale', 10, '2017-08-01');
+-- insert into T_DATA values ('rmydcbs', '9787115394392', 'price', 5, '2017/08/01');
+-- insert into T_DATA values ('rmydcbs', '9787115454898', 'sale', 10, '2017-08-01');
+-- insert into T_DATA values ('winshare', '9787115394392', 'sale', 10, '2017-08-01');
