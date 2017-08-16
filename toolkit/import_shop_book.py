@@ -3,7 +3,7 @@
 import xlrd
 import sqlite3
 
-conn = sqlite3.connect('/kdb/kdb.sqlite')
+conn = sqlite3.connect('/kdb/kdb1.sqlite')
 
 xlsx = '/kdb/shopbook.xlsx'
 workbook = xlrd.open_workbook(xlsx)
@@ -28,6 +28,10 @@ for row in range(booksheet.nrows):
     if shopbook not in shopbook_list:
         shopbook_list.append(shopbook)
 
-print(shop_list)
-print(book_list)
-print(shopbook_list)
+# print(shop_list)
+conn.executemany('insert into t_basic_shop (shop, name) values (?, ?)', shop_list)
+# print(book_list)
+conn.executemany('insert into t_basic_book (book, name) values (?, ?)', book_list)
+# print(shopbook_list)
+conn.executemany('insert into t_basic_shopbook (shop, book, url) values (?, ?, ?)', shopbook_list)
+conn.commit()
