@@ -12,6 +12,9 @@ def init():
     create_table()
     return
 
+    T_Basic_ShopBook.add('rmydcbs', '9787115394392', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.15.79c15d8JGRW05&id=539853070197&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4')
+    exit(0)
+
     from component.shop import Shop
     Shop.get_shop_list()
     exit(0)

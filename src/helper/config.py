@@ -23,8 +23,10 @@ class ConfigHelper:
                 'port': '3306',
                 'user': 'kdb',
                 'passwd': 'kdb',
-                'db': 'kdb'}
-        key_list = ['ip', 'port', 'user', 'passwd', 'db']
+                'db': 'kdb',
+                'sock': 'kdb'
+                }
+        key_list = ['ip', 'port', 'user', 'passwd', 'db', 'sock']
         for key in key_list:
             v = config_parser.ConfigHandler('config.cfg', 'mysql').fread(key)
             conn[key] = v if v else conn[key]

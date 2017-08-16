@@ -113,6 +113,16 @@ class T_Basic_ShopBook(Base, T_Base):
     url = Column(String(1024))
 
     @classmethod
+    def add(cls, shop, book, url):
+        r = cls.db_hdl.session.query(cls.id).filter(cls.shop==shop, cls.book==book).first()
+        if r is not None:
+            print('existed...')
+            return
+
+        cls.db_hdl.session.add(cls(shop=shop, book=book, url=url))
+        cls.db_hdl.session.commit()
+
+    @classmethod
     def query_shopbook_id(cls, shop, book):
         # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
         r = cls.db_hdl.session.query(cls.id).filter(cls.shop==shop, cls.book==book).first()
