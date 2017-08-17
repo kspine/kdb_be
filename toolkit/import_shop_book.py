@@ -21,17 +21,17 @@ for row in range(booksheet.nrows):
     shop = (booksheet.cell(row, 0).value, booksheet.cell(row, 1).value)
     if shop not in shop_list:
         shop_list.append(shop)
-    book = (booksheet.cell(row, 2).value, booksheet.cell(row, 3).value)
+    book = (booksheet.cell(row, 2).value, booksheet.cell(row, 3).value, booksheet.cell(row, 4).value)
     if book not in book_list:
         book_list.append(book)
-    shopbook = (booksheet.cell(row, 0).value, booksheet.cell(row, 2).value, booksheet.cell(row, 4).value)
+    shopbook = (booksheet.cell(row, 0).value, booksheet.cell(row, 2).value, booksheet.cell(row, 5).value)
     if shopbook not in shopbook_list:
         shopbook_list.append(shopbook)
 
 # print(shop_list)
 conn.executemany('insert into t_basic_shop (shop, name) values (?, ?)', shop_list)
 # print(book_list)
-conn.executemany('insert into t_basic_book (book, name) values (?, ?)', book_list)
+conn.executemany('insert into t_basic_book (book, name, category) values (?, ?, ?)', book_list)
 # print(shopbook_list)
 conn.executemany('insert into t_basic_shopbook (shop, book, url) values (?, ?, ?)', shopbook_list)
 conn.commit()
