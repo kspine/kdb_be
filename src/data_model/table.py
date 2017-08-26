@@ -163,7 +163,7 @@ class T_Data(Base, T_Base):
 
         # r = cls.db_hdl.session.query(cls.shop, cls.datatype, func.concat(cls.date), cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
         # r = cls.db_hdl.session.query(cls.shop, cls.datatype, func.concat(func.DATE(cls.date)), cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
-        r = cls.db_hdl.session.query(cls.shop, cls.datatype, cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).all()
+        r = cls.db_hdl.session.query(cls.shop, cls.datatype, cls.value).filter(cls.book==book, cls.date>=start, cls.date<end).order_by(cls.date).all()
         return r
 
 

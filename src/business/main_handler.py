@@ -184,18 +184,45 @@ class BookMultiShopQueryHandler(BaseHandler):
         print(param)
 
         book = param['book']
-        period = param['period']
 
-        start = datetime.date(2017, 7, 27)
         end = datetime.datetime.now()
+        start = end.date() - datetime.timedelta(int(param['period'])-1)
 
         # out
         # [{'id': '', 'text': ''}, ]
         # [('shop', 'datatype', 'value'), ]
+        shop_list = []
+        datatype_list = []
         r = Book.query_data_anyshop_anytype(book['id'], start, end)
+        for i in r:
+            if i[1] not in datatype_list:
+                datatype_list.append(i[1])
+            if i[0] not in shop_list:
+                shop_list.append(i[0])
+
+        c = 0
+        res = []
+        for shop in shop_list:
+            for datatype in datatype_list:
+                res_ = []
+                first = True
+                first_val = 0
+                last_val = 0
+                for i in r:
+                    if i[0] == shop and i[1] == datatype:
+                        res_.append(i[2])
+                        if first:
+                            first_val = i[2]
+                            first = False
+                        last_val = i[2]
+                if datatype == 'sale' or datatype == 'comment':
+                    #res.append((shop, datatype, last_val-first_val))
+                    res.append((shop, datatype, res_[-1]-res_[0]))
+                else:
+                    res.append((shop, datatype, round(sum(res_)/len(res_),2)))
         # [{'shop': '', 'price': '1', 'sale': 2}, ]
         data = []
-        for i in r:
+        for i in res:
             for shop in data:
                 if i[0] == shop['shop']:
                     shop.setdefault(i[1], i[2])
@@ -334,8 +361,8 @@ class MultiShopBookQueryHandler(BaseHandler):
         # 根据 type shop book, 查询 date, val
         shopbook_list = [(i['shop']['id'], i['book']['id']) for i in param['data']]
         datatype = param['type']
-        start = datetime.date(2017, 7, 27)
         end = datetime.datetime.now()
+        start = end.date() - datetime.timedelta(int(param['period'])-1)
 
         res = MultiShopBookHandler.query_data_list(shopbook_list, datatype, start, end)
         self.write(res)
