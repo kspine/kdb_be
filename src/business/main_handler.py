@@ -176,6 +176,8 @@ class BookMultiShopHandler(BaseHandler):
     def post(self):
         user = self.get_current_user()
         print(user)
+        last_request = T_OpHistory.last_request(user, 'bookmshop_query')
+
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
 
@@ -183,7 +185,14 @@ class BookMultiShopHandler(BaseHandler):
         # [{'id': '', 'text': ''}, ]
         r = Book.get_book_name_list()
         print(r)
-        self.write({'data':r})
+        if last_request:
+            last_request = json.loads(last_request)
+            book = last_request['book']['id']
+            end = datetime.datetime.now()
+            start = end.date() - datetime.timedelta(int(last_request['period'])-1)
+
+            data = Book.query_data_table(book, start, end)
+        self.write({'book_list':r, 'data': data})
 
 
 class BookMultiShopQueryHandler(BaseHandler):
@@ -198,66 +207,12 @@ class BookMultiShopQueryHandler(BaseHandler):
         param = json.loads(param)
         print(param)
 
-        book = param['book']
-
+        book = param['book']['id']
         end = datetime.datetime.now()
         start = end.date() - datetime.timedelta(int(param['period'])-1)
 
-        # out
-        # [{'id': '', 'text': ''}, ]
-        # [('shop', 'datatype', 'value'), ]
-        shop_list = []
-        datatype_list = []
-        r = Book.query_data_anyshop_anytype(book['id'], start, end)
-        for i in r:
-            if i[1] not in datatype_list:
-                datatype_list.append(i[1])
-            if i[0] not in shop_list:
-                shop_list.append(i[0])
-
-        c = 0
-        res = []
-        for shop in shop_list:
-            for datatype in datatype_list:
-                res_ = []
-                first = True
-                first_val = 0
-                last_val = 0
-                for i in r:
-                    if i[0] == shop and i[1] == datatype:
-                        res_.append(i[2])
-                        if first:
-                            first_val = i[2]
-                            first = False
-                        last_val = i[2]
-                if datatype == 'sale' or datatype == 'comment':
-                    #res.append((shop, datatype, last_val-first_val))
-                    res.append((shop, datatype, res_[-1]-res_[0]))
-                else:
-                    res.append((shop, datatype, round(sum(res_)/len(res_),2)))
-        # [{'shop': '', 'price': '1', 'sale': 2}, ]
-        data = []
-        for i in res:
-            for shop in data:
-                if i[0] == shop['shop']:
-                    shop.setdefault(i[1], i[2])
-                    break
-            else:
-                data.append({'shop': i[0], i[1]: i[2]})
-
-        for i in data:
-            for k in ['shop', 'price', 'discount', 'sale', 'comment', 'inv']:
-                if k not in i:
-                    i[k] = 0
+        data = Book.query_data_table(book, start, end)
         self.write({'data':data})
-        # self.write({'data':[{
-        #     'shop': '人邮',
-        #     'price': '11.2',
-        #     'discount': 5,
-        #     'sale': 839,
-        #     'comment': 99999,
-        #         'inv': 208.178
-        #           }]})
 
 
 class MultiShopBookHandler(BaseHandler):
