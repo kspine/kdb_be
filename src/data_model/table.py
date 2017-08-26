@@ -1,6 +1,9 @@
+import datetime
 
 import sqlalchemy
 from sqlalchemy import func
+from sqlalchemy import desc
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
 from sqlalchemy import Integer, String, DATETIME
@@ -212,6 +215,27 @@ class T_Business_TemplateData(Base, T_Base):
     temp_id = Column(Integer, primary_key=True)
     shop = Column(String(20), primary_key=True)
     book = Column(String(20), primary_key=True)
+
+
+class T_OpHistory(Base, T_Base):
+    __tablename__ = 'T_OP_HISTORY'
+
+    id = Column(Integer, primary_key=True)
+    user = Column(String(20))
+    business_id = Column(String(20))
+    request = Column(String(1024))
+    time = Column(DATETIME)
+
+    @classmethod
+    def add_request(cls, user, business_id, request):
+        cls.db_hdl.session.add(cls(user=user, business_id=business_id, request=request, time=datetime.datetime.now()))
+        cls.db_hdl.session.commit()
+
+    @classmethod
+    def last_request(cls, user, business_id):
+        r = cls.db_hdl.session.query(cls.request).filter(cls.user == user, cls.business_id == business_id).order_by(desc(cls.time)).first()
+        if r:
+            return r[0]
 
 
 def create_table():

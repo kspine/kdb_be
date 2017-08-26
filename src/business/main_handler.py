@@ -9,6 +9,18 @@ import json
 
 from component.book import Book
 from component.shop import Shop
+from data_model.table import T_OpHistory
+
+
+class BookMultiShopQueryHandler:
+    pass
+class MultiShopBookQueryHandler:
+    pass
+
+business_dict = {
+    BookMultiShopQueryHandler.__name__:'bookmshop_query',
+    MultiShopBookQueryHandler.__name__:'mshopbook_query',
+}
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
@@ -180,6 +192,9 @@ class BookMultiShopQueryHandler(BaseHandler):
         user = self.get_current_user()
         print(user)
         param = self.request.body.decode('utf-8')
+        # 保存请求记录
+        T_OpHistory.add_request(user, 'bookmshop_query', param)
+
         param = json.loads(param)
         print(param)
 
@@ -293,27 +308,32 @@ class MultiShopBookHandler(BaseHandler):
 
         user = self.get_current_user()
         print(user)
+        last_request = T_OpHistory.last_request(user, 'mshopbook_query')
+
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
         #self.write({'token': 'kylin_token'})
         # {datatype:xxx, list:[{'shop', 'book'}, {'shop', 'book'}, ...]}, 若参数为空, 则根据用户最后使用的模板查询
         # query by shop+book+datatype
-        print('request')
         # type, [(shop, book),] -> [(date, value),]
         from data_model.table import T_Config_Datatype
         from data_model.table import T_Business_Template
         # r = Book.query_data('winshare', '9787115394392', '销量', datetime.date(2017, 7, 27), datetime.datetime.now());
 
 
-        shop = 'rmydcbs'
-        book = '9787115394392'
-        datatype = 'price'
-        start = datetime.date(2017, 7, 27)
-        end = datetime.datetime.now()
-
-        data = self.query_data_list([(shop, book)], datatype, start, end)
-        # shopbook_list
         shopbook_list = []
+        data = {}
+        if last_request:
+            last_request = json.loads(last_request)
+            print(last_request)
+            shopbook_list = [(i['shop']['id'], i['book']['id']) for i in last_request['data']]
+            datatype = last_request['type']
+            end = datetime.datetime.now()
+            start = end.date() - datetime.timedelta(int(last_request['period'])-1)
+
+            data = self.query_data_list(shopbook_list, datatype, start, end)
+            print(data)
+
         shop_name_list = Shop.get_shop_name_list()
         book_name_list =  []
         for s in shop_name_list:
@@ -348,8 +368,12 @@ class MultiShopBookQueryHandler(BaseHandler):
     @tornado.web.authenticated
     def post(self):
         import mock
-
+        user = self.get_current_user()
         param = self.request.body.decode('utf-8')
+
+        # 保存请求记录
+        T_OpHistory.add_request(user, 'mshopbook_query', param)
+
         param = json.loads(param)
         # {'data': [{'book': {'text': 'Python参考手册(第4版·修订版)', 'id': '9787115394392'}, 'shop': {'text': '人民邮电出版社官方旗舰店', 'id': 'rmydcbs'}}], 'type': 'price'}
         #self.write({'token': 'kylin_token'})
