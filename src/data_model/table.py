@@ -3,6 +3,7 @@ import datetime
 import sqlalchemy
 from sqlalchemy import func
 from sqlalchemy import desc
+from sqlalchemy import distinct
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column
@@ -51,6 +52,7 @@ class T_Basic_Book(Base, T_Base):
     id = Column(Integer, primary_key=True)
     book = Column(String(20))
     name = Column(String(32))
+    category = Column(String(32))
 
     #@staticmethod
     @classmethod
@@ -76,6 +78,12 @@ class T_Basic_Book(Base, T_Base):
         #book_tuple = tuple([book[0] for book in book_list])
         book_tuple = tuple(book_list)
         r = cls.db_hdl.session.query(cls.book, cls.name).filter(cls.book.in_(book_tuple)).all()
+        return r
+
+    @classmethod
+    def query_category_list(cls):
+        #book_tuple = tuple([book[0] for book in book_list])
+        r = cls.db_hdl.session.query(distinct(cls.category)).filter().all()
         return r
 
 
@@ -219,6 +227,11 @@ class T_Business_TemplateData(Base, T_Base):
     shop = Column(String(20), primary_key=True)
     book = Column(String(20), primary_key=True)
 
+class T_Business_Formula(Base, T_Base):
+    __tablename__ = 'T_BUSINESS_FORMULA'
+
+    id = Column(Integer, primary_key=True)
+    formula = Column(String(64))
 
 class T_OpHistory(Base, T_Base):
     __tablename__ = 'T_OP_HISTORY'

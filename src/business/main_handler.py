@@ -367,21 +367,11 @@ class MultiShopBookSaveTemplateHandler(BaseHandler):
 
 class ConcernedDataHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self):
-        print('hello get')
-        #self.redirect("http://localhost:4200/content")
-        self.write("Hello, world")
-
-    @tornado.web.authenticated
     def post(self):
+        user = self.get_current_user()
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
-        #self.write({'token': 'kylin_token'})
-        if param['username'] == 'admin' and param['password'] == '111111':
-            self.write({'...': '...'})
-        else:
-            self.write({
-                "request" : "/api/authenticate",
-                "error_code" : "20502",
-                "error" : "Need you follow uid."
-            })
+        cate_list = Book.query_category_list()
+        self.write({
+            'data': [{'id':i, 'text':i} for i in cate_list]
+        })

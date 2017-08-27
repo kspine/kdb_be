@@ -47,6 +47,11 @@ class Book:
         return [(i[0].date(), i[1]) for i in r]
 
     @staticmethod
+    def query_category_list():
+        r = T_Basic_Book.query_category_list()
+        return [i[0] for i in r]
+
+    @staticmethod
     def query_data_anyshop_anytype(book, start, end):
         r = T_Data.query_anyshop_anytype(book, start, end)
         return [(i[0], i[1], i[2]) for i in r]
