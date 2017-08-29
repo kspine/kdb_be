@@ -9,7 +9,13 @@ import json
 
 from component.book import Book
 from component.shop import Shop
+from component.formula import Formula
 from data_model.table import T_OpHistory
+from data_model.table import T_Business_Monitor_Data
+
+from data_model.db import DbHandler
+
+import pandas as pd
 
 
 class BookMultiShopQueryHandler:
@@ -185,6 +191,7 @@ class BookMultiShopHandler(BaseHandler):
         # [{'id': '', 'text': ''}, ]
         r = Book.get_book_name_list()
         print(r)
+        data = []
         if last_request:
             last_request = json.loads(last_request)
             book = last_request['book']['id']
@@ -372,6 +379,29 @@ class ConcernedDataHandler(BaseHandler):
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
         cate_list = Book.query_category_list()
+        formula_list = Formula.query_all()
         self.write({
-            'data': [{'id':i, 'text':i} for i in cate_list]
+            'category_list': [{'id':i, 'text':i} for i in cate_list],
+            'formula_list': [{'id':i[0], 'text':i[1]} for i in formula_list]
+        })
+
+
+class ConcernedDataQueryHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        category = param['category']
+        formula_id = param['formula']
+        book_list = Book.query_book_name_list_by_category(category)
+        data = []
+        for book in book_list:
+            r = T_Business_Monitor_Data.query_by_book(book, formula_id)
+            for i in r:
+                data.extend([{'shop':i[0], 'book':i[1], 'datatype':i[2], 'value':i[4], 'formula':i[5], 'date':i[6]} for i in r])
+        print(data)
+        # gen response
+        self.write({
+            'data': data
         })

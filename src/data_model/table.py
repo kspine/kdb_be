@@ -81,6 +81,12 @@ class T_Basic_Book(Base, T_Base):
         return r
 
     @classmethod
+    def query_book_name_list_by_category(cls, category):
+        #book_tuple = tuple([book[0] for book in book_list])
+        r = cls.db_hdl.session.query(cls.book, cls.name).filter(cls.category==category).all()
+        return r
+
+    @classmethod
     def query_category_list(cls):
         #book_tuple = tuple([book[0] for book in book_list])
         r = cls.db_hdl.session.query(distinct(cls.category)).filter().all()
@@ -144,6 +150,17 @@ class T_Basic_ShopBook(Base, T_Base):
         # r = cls.db_hdl.session.query(cls.id).filter('shop'==shop, 'book'==book).first()
         r = cls.db_hdl.session.query(cls.book).filter(cls.shop==shop).all()
         return [i[0] for i in r]
+
+    @classmethod
+    def query_shop_list(cls, book):
+        r = cls.db_hdl.session.query(cls.shop).filter(cls.book==book).all()
+        return [i[0] for i in r]
+
+    @classmethod
+    def query_shopbook_list(cls):
+        r = cls.db_hdl.session.query(cls.shop, cls.book).filter().all()
+        return r
+
 
 class T_Data(Base, T_Base):
     __tablename__ = 'T_DATA'
@@ -231,7 +248,43 @@ class T_Business_Formula(Base, T_Base):
     __tablename__ = 'T_BUSINESS_FORMULA'
 
     id = Column(Integer, primary_key=True)
+    name = Column(String(20))
     formula = Column(String(64))
+
+    @classmethod
+    def query_all(cls):
+        r = cls.db_hdl.session.query(cls.id, cls.name, cls.formula).filter().all()
+        return r
+
+    def query(cls, id):
+        r = cls.db_hdl.session.query(cls.name, cls.formula).filter(cls.id == id).first()
+        return r
+
+class T_Business_Monitor_Data(Base, T_Base):
+    __tablename__ = 'T_BUSINESS_MONITOR_DATA'
+
+    id = Column(Integer, primary_key=True)
+    shop = Column(String(20))
+    book = Column(String(20))
+    datatype = Column(String(20))
+    value = Column(String(20))
+    value_old = Column(String(20))
+    formula_id = Column(String(64)) #id
+    date = Column(DATETIME)
+
+    @classmethod
+    def add(cls, shop, book, datatype, value, value_old, formula_id):
+        cls.db_hdl.session.add(cls(shop=shop, book=book, datatype=datatype, value=value, value_old=value_old, formula_id=formula_id, date=datetime.datetime.now()))
+        cls.db_hdl.session.commit()
+
+    @classmethod
+    def query_all(cls):
+        r = cls.db_hdl.session.query(cls.shop, cls.book, cls.value, cls.formula, cls.date).filter().all()
+        return r
+
+    def query_by_book_formula(cls, book, formula_id):
+        r = cls.db_hdl.session.query(cls.shop, cls.book, cla.datatype, cls.value, cls.formula_id, cls.date).filter(cls.book == book, cls.formula_id==formula_id).all()
+        return r
 
 class T_OpHistory(Base, T_Base):
     __tablename__ = 'T_OP_HISTORY'

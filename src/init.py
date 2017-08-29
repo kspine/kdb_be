@@ -6,10 +6,31 @@ from data_model.table import T_Business_Template
 
 from data_model.table import create_table
 
+import schedule
+import threading
+import time
+
+from business.monitor import Monitor
+
+def job():
+    Monitor.scan()
+
+def crontab(at):
+    schedule.every().day.at(at).do(job)
+    #schedule.every().minutes.do(job)
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
 # init before server listen
 def init():
     db_hdl = DbHandler()
     create_table()
+    # job()
+    t = threading.Thread(target=crontab,args=(u'0:0',))
+    t.setDaemon(True)
+    t.start()
+
     return
 
     T_Basic_ShopBook.add('rmydcbs', '9787115394392', 'https://detail.tmall.com/item.htm?spm=a1z10.3-b.w4011-9986777119.15.79c15d8JGRW05&id=539853070197&rn=934e2d1ecc4ab188c0bb95e26877b606&abbucket=4')
