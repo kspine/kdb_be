@@ -12,6 +12,8 @@ from component.shop import Shop
 from component.formula import Formula
 from data_model.table import T_OpHistory
 from data_model.table import T_Business_Monitor_Data
+from data_model.table import T_Basic_Book
+from data_model.table import T_User
 
 from data_model.db import DbHandler
 
@@ -110,7 +112,7 @@ class LoginHandler(BaseHandler):
         #self.write({'token': 'kylin_token'})
         print(param)
 
-        if "admin" == getusername and "111111" == getpassword:
+        if T_User.verify(getusername, getpassword):
             self.set_secure_cookie("user", getusername)
             self.set_secure_cookie("incorrect", "0")
             id_token = jwt.encode({'admin': '111111', 'exp':time.time()+3600}, 'secret', algorithm='HS256').decode('utf8')
@@ -392,16 +394,14 @@ class ConcernedDataQueryHandler(BaseHandler):
         user = self.get_current_user()
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
-        category = param['category']
+        print(param)
+        category = param['category']['id']
         formula_id = param['formula']
-        book_list = Book.query_book_name_list_by_category(category)
+        book_list = T_Basic_Book.query_book_name_list_by_category(category)
         data = []
         for book in book_list:
-            r = T_Business_Monitor_Data.query_by_book(book, formula_id)
-            for i in r:
-                data.extend([{'shop':i[0], 'book':i[1], 'datatype':i[2], 'value':i[4], 'formula':i[5], 'date':i[6]} for i in r])
-        print(data)
-        # gen response
+            r = T_Business_Monitor_Data.query_by_book_formula(book[0], formula_id)
+            data.extend([{'shop':i[0], 'book':i[1], 'datatype':i[2], 'value':i[3], 'formula':i[4], 'date':str(i[5].date())} for i in r])
         self.write({
             'data': data
         })

@@ -18,14 +18,21 @@ class T_Base():
     def __init__():
         self.db_hdl = DbHandler()
 
-class T_User(Base):
+class T_User(Base, T_Base):
     # 表的名字:
-    __tablename__ = 'user'
+    __tablename__ = 'T_USER'
 
     # 表的结构:
-    id = Column(Integer, primary_key=True)
+    user = Column(String(20), primary_key=True)
     name = Column(String(20))
+    password = Column(String(16))
 
+    @classmethod
+    def verify(cls, user, password):
+        r = cls.db_hdl.session.query("1").filter(cls.user==user, cls.password==password).first()
+        if not r:
+            return False
+        return True
 
 class T_Config_Datatype(Base, T_Base):
     __tablename__ = 'T_CONFIG_DATATYPE'
@@ -282,8 +289,10 @@ class T_Business_Monitor_Data(Base, T_Base):
         r = cls.db_hdl.session.query(cls.shop, cls.book, cls.value, cls.formula, cls.date).filter().all()
         return r
 
+    @classmethod
     def query_by_book_formula(cls, book, formula_id):
-        r = cls.db_hdl.session.query(cls.shop, cls.book, cla.datatype, cls.value, cls.formula_id, cls.date).filter(cls.book == book, cls.formula_id==formula_id).all()
+        #r = cls.db_hdl.session.query(cls.shop, cls.book, cls.datatype, cls.value, cls.formula_id, cls.date).filter(cls.book == book, cls.formula_id==formula_id).all()
+        r = cls.db_hdl.session.query(T_Basic_Shop.name, T_Basic_Book.name, T_Config_Datatype.name, cls.value, T_Business_Formula.name, cls.date).filter(cls.book == book, cls.formula_id==formula_id, cls.shop==T_Basic_Shop.shop, cls.book==T_Basic_Book.book, T_Config_Datatype.id==cls.datatype, T_Business_Formula.id==cls.formula_id).all()
         return r
 
 class T_OpHistory(Base, T_Base):
