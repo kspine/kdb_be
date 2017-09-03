@@ -405,3 +405,69 @@ class ConcernedDataQueryHandler(BaseHandler):
         self.write({
             'data': data
         })
+
+class UserListQueryHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = user.decode('utf-8')
+        if user != 'admin':
+            self.write({})
+            return
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        # [{'user':'', 'name': '', 'role': ''}, ]
+        user_list = T_User.all()
+        # self.write({'list':[{'user':i[0], 'name':i[1], 'role':i[2], 'password':i[3]} for i in user_list]})
+        self.write({'list':[{'user':i[0], 'name':i[1], 'role':i[2]} for i in user_list]})
+
+
+class UserEditHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = user.decode('utf-8')
+        if user != 'admin':
+            return
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        T_User.set(param)
+        self.write({'res':True})
+
+
+class UserAddHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = user.decode('utf-8')
+        if user != 'admin':
+            return
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        param['password'] = '111111'
+        T_User.add(param)
+        self.write({'res':True})
+
+class UserDeleteHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = user.decode('utf-8')
+        if user != 'admin':
+            return
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        user = param['user']
+        T_User.delete(user)
+        self.write({'res':True})
+
+
+class UserChangePasswordHandler(BaseHandler):
+    @tornado.web.authenticated
+    def post(self):
+        user = self.get_current_user()
+        user = user.decode('utf-8')
+        param = self.request.body.decode('utf-8')
+        param = json.loads(param)
+        T_User.set(param)
+        self.write({'res':True})

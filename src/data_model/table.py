@@ -25,6 +25,7 @@ class T_User(Base, T_Base):
     # 表的结构:
     user = Column(String(20), primary_key=True)
     name = Column(String(20))
+    role = Column(String(20))
     password = Column(String(16))
 
     @classmethod
@@ -33,6 +34,31 @@ class T_User(Base, T_Base):
         if not r:
             return False
         return True
+
+    @classmethod
+    def all(cls):
+        r = cls.db_hdl.session.query(cls).all()
+        return [(user.user, user.name, user.role, user.password) for user in r]
+
+    @classmethod
+    def add(cls, info):
+        cls.db_hdl.session.add(cls(user=info['user'], name=info['name'], role=info['name'], password=info['password']))
+        cls.db_hdl.session.commit()
+
+    @classmethod
+    def get(cls, user):
+        r = cls.db_hdl.session.query(cls).filter(cls.user==user).first()
+        return r
+
+    @classmethod
+    def set(cls, info):
+        cls.db_hdl.session.query(cls).filter(cls.user==info['user']).update(info)
+        cls.db_hdl.session.commit()
+
+    @classmethod
+    def delete(cls, user):
+        r = cls.db_hdl.session.query(cls).filter(cls.user==user).delete()
+        cls.db_hdl.session.commit()
 
 class T_Config_Datatype(Base, T_Base):
     __tablename__ = 'T_CONFIG_DATATYPE'
