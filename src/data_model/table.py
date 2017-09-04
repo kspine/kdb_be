@@ -42,7 +42,7 @@ class T_User(Base, T_Base):
 
     @classmethod
     def add(cls, info):
-        cls.db_hdl.session.add(cls(user=info['user'], name=info['name'], role=info['name'], password=info['password']))
+        cls.db_hdl.session.add(cls(user=info['user'], name=info['name'], role=info['role'], password=info['password']))
         cls.db_hdl.session.commit()
 
     @classmethod
