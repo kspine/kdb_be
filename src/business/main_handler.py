@@ -444,7 +444,7 @@ class UserAddHandler(BaseHandler):
             return
         param = self.request.body.decode('utf-8')
         param = json.loads(param)
-        param['password'] = '111111'
+        # param['password'] = '111111'
         T_User.add(param)
         self.write({'res':True})
 
