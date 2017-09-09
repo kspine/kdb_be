@@ -41,8 +41,8 @@ class MainHandler(tornado.web.RequestHandler):
 class BaseHandler(tornado.web.RequestHandler):
     def set_default_headers(self):
         # The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. Origin 'http://localhost:4200' is therefore not allowed access. The credentials mode of requests initiated by the XMLHttpRequest is controlled by the withCredentials attribute.
-        #self.set_header('Access-Control-Allow-Origin', 'http://kylin-ux.com:4200')
-        self.set_header('Access-Control-Allow-Origin', 'http://localhost:4200')
+        self.set_header('Access-Control-Allow-Origin', 'http://kylin-ux.com:4200')
+        #self.set_header('Access-Control-Allow-Origin', 'http://localhost:4200')
         #self.set_header('Access-Control-Allow-Origin', '*')
         self.set_header("Access-Control-Allow-Headers", "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers")
         self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
