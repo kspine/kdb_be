@@ -286,10 +286,13 @@ class MultiShopBookHandler(BaseHandler):
 
 
         shopbook_list = []
-        data = {}
+        data = {
+            'type': '',
+            'data': []
+        }
         if last_request:
             last_request = json.loads(last_request)
-            print(last_request)
+            print('last request:\n', last_request)
             shopbook_list = [(i['shop']['id'], i['book']['id']) for i in last_request['data']]
             datatype = last_request['type']
             end = datetime.datetime.now()
